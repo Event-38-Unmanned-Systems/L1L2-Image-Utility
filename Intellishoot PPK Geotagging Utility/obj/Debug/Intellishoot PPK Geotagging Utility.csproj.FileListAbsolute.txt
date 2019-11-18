@@ -1,0 +1,10 @@
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot PPK Geotagging Utility.csprojResolveAssemblyReference.cache
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot_PPK_Geotagging_Utility.Intellishoot_PPK_Geotagging_Utility.resources
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot_PPK_Geotagging_Utility.Properties.Resources.resources
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot PPK Geotagging Utility.csproj.GenerateResource.Cache
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot PPK Geotagging Utility.csproj.CoreCompileInputs.cache
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\bin\Debug\Intellishoot PPK Geotagging Utility.exe.config
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\bin\Debug\Intellishoot PPK Geotagging Utility.exe
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\bin\Debug\Intellishoot PPK Geotagging Utility.pdb
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot PPK Geotagging Utility.exe
+C:\Users\Mathew\source\repos\E38_Delay_Utility\Intellishoot PPK Geotagging Utility\obj\Debug\Intellishoot PPK Geotagging Utility.pdb
