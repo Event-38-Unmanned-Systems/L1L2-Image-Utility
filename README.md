@@ -7,3 +7,6 @@ Used to convert .SBP files to rinex and shift event marks inside rinex files
 
 Used to tag images with events.pos files from post processing using RTLlib.
 Linerally matches images to tags. Assumes number of pictures match images. 
+
+
+https://e38rawstore.s3.us-west-2.amazonaws.com/E38-Utilites.zip
