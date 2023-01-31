@@ -20,15 +20,13 @@ namespace Intellishoot_PPK_Geotagging_Utility
         public Intellishoot_PPK_Geotagging_Utility()
         {
             InitializeComponent();
-            comboBox1.SelectedIndex = 0;
+            
 
             var path = new System.Drawing.Drawing2D.GraphicsPath();
             path.AddEllipse(0, 0, label2.Width, label2.Height);
 
             this.label1.Region = new Region(path);
             this.label2.Region = new Region(path);
-            this.label3.Region = new Region(path);
-            this.label4.Region = new Region(path);
         }
         
         private void button3_Click(object sender, EventArgs e)
@@ -38,10 +36,7 @@ namespace Intellishoot_PPK_Geotagging_Utility
 
             foreach (var profile in profiles.Values)
             {
-                if (profile.name == comboBox1.Text || comboBox1.Text == "Select/Add an Antenna")
-                {
-                    inList = true;
-                }
+
             }
 
             if (!inList)
@@ -49,8 +44,6 @@ namespace Intellishoot_PPK_Geotagging_Utility
                 try
                 {
                     profileinfo newprofile = new profileinfo();
-                    newprofile.offset = decimal.Parse(camera_height_offset.Text);
-                    newprofile.name = comboBox1.Text;
                     profiles.Add("camera", newprofile);
                     loadprofileList(true, Path.Combine(Environment.CurrentDirectory, "profiles.xml"));
                 }
@@ -64,7 +57,7 @@ namespace Intellishoot_PPK_Geotagging_Utility
             List<CameraLog> log = new List<CameraLog>();
 
             log = PPKList(LogFilePath.Text.ToString());
-            tagFromPPK(ImagePath.Text.ToString(), log, camera_height_offset.Text);
+            tagFromPPK(ImagePath.Text.ToString(), log);
             DialogResult result = DialogResult.OK;
             if (result.Equals(DialogResult.OK))
             {
@@ -174,21 +167,41 @@ namespace Intellishoot_PPK_Geotagging_Utility
                 // populate list
                 foreach (var profile in profiles.Values)
                 {
-                    if (!comboBox1.Items.Contains(profile.name))
-                        comboBox1.Items.Add(profile.name);
                 }
             }
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+
+
+            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+            {
+                openFileDialog1.ValidateNames = false;
+                openFileDialog1.CheckFileExists = false;
+                openFileDialog1.CheckPathExists = true;
+
+                // Always default to Folder Selection.
+                openFileDialog1.FileName = "Folder Selection.";
+
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    ImagePath.Text = Path.GetDirectoryName(openFileDialog1.FileName);
+                    
+                }
+
+                ImagePath.Visible = true;
+            }
+
+
+
+           /* var dialog = new System.Windows.Forms.FolderBrowserDialog();
             System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 ImagePath.Text = dialog.SelectedPath;
             }
-            ImagePath.Visible = true;
+            ImagePath.Visible = true;*/
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -197,7 +210,7 @@ namespace Intellishoot_PPK_Geotagging_Utility
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
 
-                openFileDialog1.Filter = "pos(*.pos)|*.pos";
+                openFileDialog1.Filter = "pos(*.pos);txt files (*.txt)|*.pos;*.txt";
                 openFileDialog1.FilterIndex = 2;
                 openFileDialog1.RestoreDirectory = true;
                 openFileDialog1.Multiselect = true;
@@ -233,20 +246,83 @@ namespace Intellishoot_PPK_Geotagging_Utility
                     newLog = new CameraLog();
                     string[] gpsLine = line3.Split(new[] { ' ' });
 
+                    string[] splitdate = gpsLine[0].Split('/');
+                    string[] splittime = gpsLine[1].Split(':');
+                    string[] splittimeMS = splittime[2].Split('.');
+
+
+                    newLog.tagDatetime = new DateTimeOffset(int.Parse(splitdate[0]), int.Parse(splitdate[1]), int.Parse(splitdate[2]), int.Parse(splittime[0]), int.Parse(splittime[1]), int.Parse(splittimeMS[0]), int.Parse(splittimeMS[1]),TimeSpan.Zero);
 
 
                     newLog.Latitude = decimal.Parse(gpsLine[2]);
                     newLog.Longitude = decimal.Parse(gpsLine[3]);
                     newLog.GPSAltitude = double.Parse(gpsLine[4]);
+                    //RPY are not used at this time
+                    newLog.Yaw = 0;
+                    newLog.Pitch = 0;
+                    newLog.Roll = 0;
+                    newLog.orientationAccuracy = 0;
+
+                    newLog.q = int.Parse(gpsLine[5]);
+
+                    if (newLog.q == 1)
+                    {
+                        newLog.geotagAccuracy = .05;
+                        newLog.enabled = 1;
+
+                    }
+                    else if (newLog.q == 2)
+                    {
+                        newLog.geotagAccuracy = .4;
+                        newLog.enabled = 1;
+
+                    }
+                    else
+                    {
+                        newLog.geotagAccuracy = 5;
+                        newLog.enabled = 0;
+
+                    }
+
                     newLog.q = int.Parse(gpsLine[5]);
                     // newLog.q = int.Parse(gpsLine[10]);
-                    newLog.LogType = "CAM";
+                    newLog.LogType = "PPK";
                     newLog.OrderAdded = OrderAdded;
 
                     data.Add(newLog);
 
                     OrderAdded = OrderAdded + 1;
                 }
+                if (item.StartsWith("D"))
+                {
+
+                    newLog = new CameraLog();
+                    string[] gpsLine = item.Split(new[] { '\t' });
+
+
+                    newLog.Latitude = decimal.Parse(gpsLine[1]);
+                    newLog.Longitude = decimal.Parse(gpsLine[2]);
+                    newLog.GPSAltitude = double.Parse(gpsLine[3]);
+                    newLog.Yaw = decimal.Parse(gpsLine[4]);
+                    newLog.Pitch = decimal.Parse(gpsLine[5]);
+                    newLog.Roll = decimal.Parse(gpsLine[6]);
+                    newLog.geotagAccuracy = double.Parse(gpsLine[7]);
+                    newLog.orientationAccuracy = double.Parse(gpsLine[8]);
+                    newLog.enabled = int.Parse(gpsLine[9]);
+                    newLog.q = 6;
+                    // newLog.q = int.Parse(gpsLine[10]);
+                    newLog.LogType = "standard";
+                    newLog.OrderAdded = OrderAdded;
+
+                    data.Add(newLog);
+
+                    OrderAdded = OrderAdded + 1;
+                }
+            }
+           
+            if (data[0].LogType == "PPK")
+            {
+                data.Sort((x, y) => DateTimeOffset.Compare(x.tagDatetime, y.tagDatetime));
             }
 
             return data;
@@ -290,18 +366,32 @@ namespace Intellishoot_PPK_Geotagging_Utility
             List<Picture> Pictures = new List<Picture>();
             foreach (string r in GetImages(filePath))
             {
+                
                 Picture pic = new Picture();
                 pic.isused = false;
                 pic.estIDX = i;
-                pic.timetaken = pullDateFromImage(r);
                 pic.ImageName = r.Split('\\').Last();
-                Pictures.Add(pic);
-                i++;
+                if (!pic.ImageName.EndsWith(".tif"))
+                {
+                    pic.timetaken = pullDateFromImage(r);
+                    Pictures.Add(pic);
+                    i++;
+                }
+                else { 
+                    if (pic.ImageName.Contains("_1.tif"))
+                    {
+                        Pictures.Add(pic);
+                        i++;
+                    }
+       
+                    }
+
             }
 
             return Pictures;
         }
-        private static void tagFromPPK(string imageFileName, List<CameraLog> gpsLog, string height_offset)
+
+        private static void tagFromPPK(string imageFileName, List<CameraLog> gpsLog)
         {
             int i = 1;
             //get images
@@ -313,35 +403,10 @@ namespace Intellishoot_PPK_Geotagging_Utility
             //put tags with pictures
 
             //write to pictures
-            writeToFilePPK(gpsLog, pictureNames, imageFileName, height_offset);
+            writeToFilePPK(gpsLog, pictureNames, imageFileName);
 
             IEnumerable<string> image = GetImages(imageFileName);
             var enum3 = image.GetEnumerator();
-
-            //foreach (CameraLog item in gpsLog)
-            //{
-            //    enum3.MoveNext();
-            //    if (enum3.Current != null)
-            //    {
-            //        if (image.Count() >= i && item.q == 1)
-            //        {
-            //            i++;
-            //            Helpers.ImageUtilityHelper.WriteCoordinatesToImage(enum3.Current,
-            //                        double.Parse(item.Latitude.ToString()), double.Parse(item.Longitude.ToString()),
-            //                        double.Parse(item.GPSAltitude.ToString()));
-            //        }
-            //        else
-            //        {
-            //            bool exists = System.IO.Directory.Exists(Path.GetDirectoryName(enum3.Current) + "\\processed\\");
-
-            //            if (!exists)
-            //                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(enum3.Current) + "\\processed\\");
-            //            i++;
-            //            System.IO.File.Copy(enum3.Current, Path.GetDirectoryName(enum3.Current) + "\\processed\\" + Path.GetFileName(enum3.Current), true);
-            //        }
-
-            //    }
-            //}
 
         }
 
@@ -365,7 +430,7 @@ namespace Intellishoot_PPK_Geotagging_Utility
                 || s.ToLower().EndsWith(".png") || s.ToLower().EndsWith(".raw"));
         }
 
-        private static void writeToFilePPK(List<CameraLog> finalCoords, List<Picture> pictureName, string ImageFileName, string height_offset)
+        private static void writeToFilePPK(List<CameraLog> finalCoords, List<Picture> pictureName, string ImageFileName)
         {
             IEnumerator<CameraLog> enum1 = finalCoords.GetEnumerator();
             IEnumerator<Picture> enum2 = pictureName.GetEnumerator();
@@ -384,6 +449,7 @@ namespace Intellishoot_PPK_Geotagging_Utility
             double q3 = 0;
             double q4 = 0;
             double q5 = 0;
+            double q6 = 0;
             foreach (var item in finalCoords)
             {
                 if (item.q == 1)
@@ -406,14 +472,17 @@ namespace Intellishoot_PPK_Geotagging_Utility
                 {
                     q5++;
                 }
+                if (item.q == 6)
+                {
+                    q6++;
+                }
 
                 item.GPSAltitude = item.GPSAltitude;
-                if (item.q == 1)
-                {
-                    sb.Append(string.Format("{0}\t{1}\t{2}\t{3}\t", item.ImageName, item.Latitude.ToString(), item.Longitude.ToString(), (item.GPSAltitude - double.Parse(height_offset)).ToString()) + Environment.NewLine);
-                }
-                Quality.Append(string.Format("{0}\t{1}\t", item.ImageName, item.q.ToString()) + Environment.NewLine);
 
+                sb.Append(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", item.ImageName, item.Latitude.ToString(), item.Longitude.ToString(), (item.GPSAltitude).ToString(),(item.Yaw.ToString()), (item.Pitch.ToString()), item.Roll.ToString(),(item.geotagAccuracy.ToString()),(item.orientationAccuracy.ToString()), (item.enabled.ToString())) + Environment.NewLine);
+                
+         
+                Quality.Append(string.Format("{0}\t{1}\t", item.ImageName, item.q.ToString()) + Environment.NewLine);
 
             }
             Quality.Insert(0, string.Format(Environment.NewLine));
@@ -421,15 +490,17 @@ namespace Intellishoot_PPK_Geotagging_Utility
             Quality.Insert(0, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", "Number of points - FIX: ", q1.ToString(), "Float:", q2.ToString(), "Single: ", q3.ToString(), "Q4: ", q4, "Q5: ", q5.ToString()) + Environment.NewLine, 1);
 
             //changeimagefilename to imageppicture name
-            using (StreamWriter outfile = new StreamWriter(ImageFileName + @"\ImageLog.txt"))
+            using (StreamWriter outfile = new StreamWriter(ImageFileName + @"\Geotags.txt"))
             {
                 outfile.Write(sb.ToString());
             }
-            using (StreamWriter outfile = new StreamWriter(ImageFileName + @"\QualityReport.txt"))
+            if (q6 == 0)
             {
-                outfile.Write(Quality.ToString());
+                using (StreamWriter outfile = new StreamWriter(ImageFileName + @"\QualityReport.txt"))
+                {
+                    outfile.Write(Quality.ToString());
+                }
             }
-
 
         }
 
@@ -443,22 +514,7 @@ namespace Intellishoot_PPK_Geotagging_Utility
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-           if (comboBox1.Text == "Select/Add an Antenna")
-            {
-                camera_height_offset.Visible = true;
-            }
-            else
-            {
-                camera_height_offset.Visible = true;
 
-                foreach (var profile in profiles)
-                {
-                    if (profile.Value.name.ToString() == comboBox1.Text.ToString())
-                    {
-                        camera_height_offset.Text = profile.Value.offset.ToString();
-                    }
-                }
-            }
         }
 
         private void comboBox1_Click(object sender, EventArgs e)

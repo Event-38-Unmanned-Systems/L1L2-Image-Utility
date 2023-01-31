@@ -136,7 +136,7 @@ namespace Position_Adverage
                 dist = GetDistance(list[i-1].longitude, list[i-1].latitude, list[i].longitude, list[i].latitude);
                 
 
-                if (dist > .03 && pointsWithinDist > 25)
+                if (dist > .03 && pointsWithinDist > 25 )
                 {
                     adveragedLonList.Add(adverageLon/pointsWithinDist);
                     adveragedLatList.Add(adverageLat /pointsWithinDist);
@@ -156,6 +156,21 @@ namespace Position_Adverage
                     pointsWithinDist++;
                 }
             }
+
+            if (pointsWithinDist > 25 )
+                {
+                adveragedLonList.Add(adverageLon / pointsWithinDist);
+                adveragedLatList.Add(adverageLat / pointsWithinDist);
+                adveragedHeightList.Add(adverageHeight / pointsWithinDist);
+                pointsWithinDist = 0;
+                adverageLat = 0;
+                adverageLon = 0;
+                adverageHeight = 0;
+                pointsCollected++;
+
+            }
+
+
             writeToFile(adveragedLatList, adveragedLonList, adveragedHeightList, "0");
         }
 

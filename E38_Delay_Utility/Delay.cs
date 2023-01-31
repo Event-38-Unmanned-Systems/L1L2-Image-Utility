@@ -36,7 +36,7 @@ namespace E38_Delay_Utility
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
 
-                openFileDialog1.Filter = "Obs, SBP (*.obs,*.SBP)|*.obs;*.sbp;";
+                openFileDialog1.Filter = "Obs,(*.obs)|*.obs;";
                 openFileDialog1.FilterIndex = 2;
                 openFileDialog1.RestoreDirectory = true;
                 openFileDialog1.Multiselect = true;
@@ -78,7 +78,7 @@ namespace E38_Delay_Utility
 
             foreach (var camera in cameras.Values)
             {
-                if (camera.name == comboBox1.Text || comboBox1.Text == "R10C" || comboBox1.Text == "RX1RII" || comboBox1.Text == "Phantom 4k" || comboBox1.Text == "Select Camera") 
+                if (camera.name == comboBox1.Text || comboBox1.Text == "R10C" || comboBox1.Text == "RX1RII" || comboBox1.Text == "Sony A6100" || comboBox1.Text == "Sony A7R IV" || comboBox1.Text == "Select Camera") 
                 {
                     inList = true;
                 }
@@ -113,7 +113,7 @@ namespace E38_Delay_Utility
                 rinex3();
             }
 
-
+            MessageBox.Show("Processing Complete!");
 
 
         }
@@ -253,12 +253,12 @@ namespace E38_Delay_Utility
             }
             else if (comboBox1.Text == "RX1RII")
             {
-                msdelay = 0m;
+                msdelay = -0.008m;
                 textBox1.Visible = false;
             }
-            else if (comboBox1.Text == "Phantom 4k")
+            else if (comboBox1.Text == "Sony A6100" || comboBox1.Text == "Sony A7R IV")
             {
-                msdelay = -0.055m;
+                msdelay = -0.004m;
                 textBox1.Visible = false;
             }
             else if (comboBox1.Text == "Select Camera")
@@ -485,7 +485,7 @@ namespace E38_Delay_Utility
             }
 
             using (System.IO.StreamWriter file =
-          new System.IO.StreamWriter(Pos_FilePath.Text + "_" + "formatted.obs"))
+          new System.IO.StreamWriter(Pos_FilePath.Text.Replace(".obs","_formatted.obs")))
             {
                 foreach (string line in newFile)
                 {
@@ -502,13 +502,16 @@ namespace E38_Delay_Utility
             {       //shutter happens -.235ms before picture is taken. 205 is from the camera 30 from tiny circuit
                 msdelay = -0.235m;
                 textBox1.Visible = false;
+
             }
             else if (comboBox1.Text == "RX1RII")
             {
+                msdelay = -0.008m;
                 textBox1.Visible = false;
             }
-            else if (comboBox1.Text == "Phantom 4k")
+            else if (comboBox1.Text == "Sony A6100" || comboBox1.Text == "Sony A7R IV")
             {
+                msdelay = -0.004m;
                 textBox1.Visible = false;
             }
             else if (comboBox1.Text == "Select Camera")
@@ -652,7 +655,7 @@ namespace E38_Delay_Utility
 
 
             using (System.IO.StreamWriter file =
-new System.IO.StreamWriter(Pos_FilePath.Text + "_" + "formatted.obs"))
+          new System.IO.StreamWriter(Pos_FilePath.Text.Replace(".obs", "_formatted.obs")))
             {
                 foreach (string line in records3)
                 {
@@ -708,16 +711,7 @@ new System.IO.StreamWriter(Pos_FilePath.Text + "_" + "formatted.obs"))
 
         private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            if (comboBox1.Text == "R10C")
-            {       //shutter happens -.235ms before picture is taken. 205 is from the camera 30 from tiny circuit
-                textBox1.Visible = false;
-
-            }
-            else if (comboBox1.Text == "RX1RII")
-            {
-                textBox1.Visible = false;
-            }
-            else if (comboBox1.Text == "Phantom 4k")
+            if (comboBox1.Text == "Sony A6100" || comboBox1.Text == "Sony A7R IV" || comboBox1.Text == "RX1RII" || comboBox1.Text == "R10C")
             {
                 textBox1.Visible = false;
             }

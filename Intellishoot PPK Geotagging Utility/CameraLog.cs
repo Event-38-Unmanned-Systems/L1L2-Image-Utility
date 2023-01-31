@@ -33,6 +33,8 @@ namespace Intellishoot_PPK_Geotagging_Utility
         // - Time (ms), Lat, Lng, Alt, RelAlt, Roll, Pitch Yaw
         public DateTime userCompTime { get; set; }
 
+        public DateTimeOffset tagDatetime { get; set; }
+
         public int q { get; set; }
 
         public int OrderAdded { get; set; }
@@ -58,6 +60,12 @@ namespace Intellishoot_PPK_Geotagging_Utility
         public decimal Yaw { get; set; }
 
         public double Time { get; set; }
+
+        public double orientationAccuracy { get; set; }
+
+        public double geotagAccuracy { get; set; }
+
+        public int enabled { get; set; }
 
         public int imgindex { get; set; }
     }

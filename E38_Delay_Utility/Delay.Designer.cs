@@ -49,7 +49,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Process";
+            this.button1.Text = "Format";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.Delay_Click_Click);
             // 
@@ -60,9 +60,10 @@
             this.comboBox1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.comboBox1.Items.AddRange(new object[] {
             "Select/Add Camera",
-            "R10C",
+            "Sony A6100",
+            "Sony A7R IV",
             "RX1RII",
-            "Phantom 4k"});
+            "R10C"});
             this.comboBox1.Location = new System.Drawing.Point(35, 101);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
@@ -96,11 +97,11 @@
             // 
             this.Pos_FilePath.AutoSize = true;
             this.Pos_FilePath.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.Pos_FilePath.Location = new System.Drawing.Point(84, 56);
+            this.Pos_FilePath.Location = new System.Drawing.Point(57, 56);
             this.Pos_FilePath.Name = "Pos_FilePath";
-            this.Pos_FilePath.Size = new System.Drawing.Size(72, 13);
+            this.Pos_FilePath.Size = new System.Drawing.Size(73, 13);
             this.Pos_FilePath.TabIndex = 4;
-            this.Pos_FilePath.Text = "SBP File Path";
+            this.Pos_FilePath.Text = "OBS File Path";
             this.Pos_FilePath.Visible = false;
             // 
             // button2
@@ -110,7 +111,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(121, 23);
             this.button2.TabIndex = 5;
-            this.button2.Text = "SBP File";
+            this.button2.Text = "Select OBS file";
             this.toolTip1.SetToolTip(this.button2, "Select the .SBP file located inside the Rover directory.");
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
